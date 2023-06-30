@@ -7,3 +7,4 @@ Features
 #REST API: The application exposes a RESTful API for seamless integration with front-end or mobile applications.
 #Spring Security: Authentication is implemented using Spring Security to secure the endpoints and restrict unauthorized access.
 #JPA: JPA (Java Persistence API) is used for interacting with the database, making it easier to perform database operations.
+UI for above apis : https://github.com/DineshJBS/products-department-app-ui
