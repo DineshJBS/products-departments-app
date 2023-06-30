@@ -3,7 +3,6 @@ This is a web application developed using Spring Boot that allows users to manag
 
 Features
 #Products Management: Users can perform CRUD operations (Create, Read, Update, Delete) on products.
-#Departments Management: Users can perform CRUD operations on departments.
 #Hibernate Mapping: Products and departments are stored in a relational database using Hibernate mapping.
 #REST API: The application exposes a RESTful API for seamless integration with front-end or mobile applications.
 #Spring Security: Authentication is implemented using Spring Security to secure the endpoints and restrict unauthorized access.
