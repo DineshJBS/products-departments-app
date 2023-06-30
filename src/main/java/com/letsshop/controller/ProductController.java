@@ -41,7 +41,7 @@ public class ProductController {
 
         System.out.println(productResponse.toString());
 
-        Product isAlreadyExist = repository.findByProductName(productResponse.getProductName());
+        Product isAlreadyExist = repository.findById(productResponse.getProductId()).get();
         if(isAlreadyExist != null){
             isAlreadyExist.setDeleteOrNo(0);
             return repository.save(isAlreadyExist);
@@ -51,9 +51,9 @@ public class ProductController {
 
         Department isDeptExist = deparmentService.getDepartmentByName(productResponse.getDeptName());
         if(isDeptExist != null){
-           isDeptExist.add(tempProduct);
+            isDeptExist.add(tempProduct);
             deparmentService.addDepartment(isDeptExist);
-           return tempProduct;
+            return tempProduct;
         }
 
         Department tempDepartment = new Department(productResponse.getDeptName());
@@ -67,15 +67,15 @@ public class ProductController {
 
     }
 
-    @PutMapping("/products/{productName}")
-    public Product updateProduct(@PathVariable String productName, @RequestBody ProductResponse productResponse){
+    @PutMapping("/products/{productId}")
+    public Product updateProduct(@PathVariable int productId, @RequestBody ProductResponse productResponse){
 
         System.out.println(productResponse.getProductName() + productResponse.getDeptName());
-        System.out.println(productName + "from path variable");
+        System.out.println(productId + "from path variable");
 
 
 
-        Product tempProduct = repository.findByProductName(productName);
+        Product tempProduct = repository.findById(productId).get();
         System.out.println(tempProduct.toString());
 
         tempProduct.setProductName(productResponse.getProductName());
@@ -84,16 +84,16 @@ public class ProductController {
 
     }
 
-    @DeleteMapping("/products/{productName}")
-    public Product deleteProduct(@PathVariable String productName){
+    @DeleteMapping("/products/{productId}")
+    public Product deleteProduct(@PathVariable String productId){
 //        String productName = productResponse.getProductName();
         System.out.println("Reached the controller deleting method");
         List<Product> tempProducts = productService.getProductsForDeleting();
 
         Product productToDelete = tempProducts.stream()
-                        .filter(p -> p.getProductName().equals(productName))
-                                .findFirst()
-                                        .orElse(null);
+                .filter(p -> p.getProductId() == Integer.valueOf(productId))
+                .findFirst()
+                .orElse(null);
 
 //        System.out.println(productToDelete.getProductId() + " " + productToDelete.getProductName());
         if( productToDelete != null ){

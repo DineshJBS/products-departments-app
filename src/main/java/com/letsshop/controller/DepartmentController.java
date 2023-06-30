@@ -23,6 +23,8 @@ public class DepartmentController {
 
     @GetMapping("/")
     public List<DepartmentDTO> getDepartments(){
+        System.out.println(departmentService.getDepartments().toString());
+
         return departmentService.getDepartments();
     }
 

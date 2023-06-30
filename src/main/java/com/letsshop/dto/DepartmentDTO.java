@@ -35,4 +35,13 @@ public class DepartmentDTO {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
+    @Override
+    public String toString() {
+        return "DepartmentDTO{" +
+                "deptId=" + deptId +
+                ", deptName='" + deptName + '\'' +
+                ", products=" + products +
+                '}';
+    }
 }

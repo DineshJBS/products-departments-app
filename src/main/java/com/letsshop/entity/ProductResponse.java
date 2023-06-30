@@ -2,6 +2,8 @@ package com.letsshop.entity;
 
 public class ProductResponse {
 
+    private int productId;
+
     private String productName;
 
     private String deptName;
@@ -31,8 +33,17 @@ public class ProductResponse {
     @Override
     public String toString() {
         return "ProductResponse{" +
-                "productName='" + productName + '\'' +
+                "productId=" + productId +
+                ", productName='" + productName + '\'' +
                 ", deptName='" + deptName + '\'' +
                 '}';
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 }

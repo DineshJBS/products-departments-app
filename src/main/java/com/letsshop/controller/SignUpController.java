@@ -30,14 +30,11 @@ public class SignUpController {
 
     @CrossOrigin(origins = {"http://localhost:4200"})
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody UserInfo userInfo) {
+    public ResponseEntity<String> login(@RequestBody UserInfo userInfo) {
         // Your existing code...
         System.out.println("login url hit");
 
-        // Create a response object with a status property
-        LoginResponse response = new LoginResponse("success");
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok("OK");
     }
 
 }
