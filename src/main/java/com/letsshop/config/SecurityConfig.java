@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/customer/signup-submit").permitAll()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/products","/department/**", "/products/**", "/customer/login").authenticated()
+                .authorizeHttpRequests().requestMatchers("/products","/department/**", "/products/**", "/customer/login","/productsAndDepartments").authenticated()
 
                 .and()
                 .cors().configurationSource(request -> {

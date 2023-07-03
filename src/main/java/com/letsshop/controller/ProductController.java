@@ -1,5 +1,6 @@
 package com.letsshop.controller;
 import com.letsshop.dto.ProductDTO;
+import com.letsshop.dto.ProductDepartmentResponse;
 import com.letsshop.entity.Department;
 import com.letsshop.entity.Product;
 import com.letsshop.entity.ProductResponse;
@@ -41,7 +42,7 @@ public class ProductController {
 
         System.out.println(productResponse.toString());
 
-        Product isAlreadyExist = repository.findById(productResponse.getProductId()).get();
+        Product isAlreadyExist = repository.findById(productResponse.getProductId()).orElse(null);
         if(isAlreadyExist != null){
             isAlreadyExist.setDeleteOrNo(0);
             return repository.save(isAlreadyExist);
@@ -102,6 +103,11 @@ public class ProductController {
         }
 
         return  repository.save(productToDelete);
+    }
+
+    @GetMapping("/productsAndDepartments")
+    public List<ProductDepartmentResponse> getProductsAndDepartments(){
+        return repository.getProductsAndDepartments();
     }
 
 }
