@@ -1,4 +1,4 @@
-package com.letsshop.response;
+package com.letsshop.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

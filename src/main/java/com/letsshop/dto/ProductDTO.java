@@ -6,6 +6,26 @@ public class ProductDTO {
 
     private String deptName;
 
+    private int price;
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public ProductDTO(int productId, String productName, String deptName, int price) {
+        this.productId = productId;
+        this.productName = productName;
+        this.deptName = deptName;
+        this.price = price;
+    }
+
+    public ProductDTO() {
+    }
+
     public String getDeptName() {
         return deptName;
     }

@@ -21,7 +21,17 @@ public class Product {
    @JsonBackReference
    private Department department;
 
-   private int deleteOrNo;
+   private int price;
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    private int deleteOrNo;
 
     public int getDeleteOrNo() {
         return deleteOrNo;
@@ -31,8 +41,8 @@ public class Product {
         this.deleteOrNo = deleteOrNo;
     }
 
-    public Product(String productName) {
-
+    public Product(String productName, int price ){
+        this.price = price;
         this.productName = productName;
 
     }
@@ -69,7 +79,9 @@ public class Product {
         return "Product{" +
                 "productId=" + productId +
                 ", productName='" + productName + '\'' +
-                // Exclude the department field from the string representation
+                ", department=" + department +
+                ", price=" + price +
+                ", deleteOrNo=" + deleteOrNo +
                 '}';
     }
 

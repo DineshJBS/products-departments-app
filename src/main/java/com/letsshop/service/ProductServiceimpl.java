@@ -59,8 +59,10 @@ public class ProductServiceimpl implements ProductService{
         ProductDTO productDTO = new ProductDTO();
         productDTO.setProductId(product.getProductId());
         productDTO.setProductName(product.getProductName());
+        productDTO.setPrice(product.getPrice());
 //        productDTO.setDeptName(product.getDepartment().getDeptName());
 
         return productDTO;
     }
+
 }

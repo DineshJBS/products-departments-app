@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -29,9 +31,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/customer/signup-submit").permitAll()
+                .requestMatchers("/customer/signup-submit", "/customer/forgotpassword","/customer/resetpassword").permitAll()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/products","/department/**", "/products/**", "/customer/login","/productsAndDepartments").authenticated()
+                .authorizeHttpRequests()
+                .requestMatchers("/products","/department/**", "/products/**",
+                        "/customer/login","/productsAndDepartments","/user-products",
+                        "/add-to-cart", "/user-orders", "/customer/role",
+                        "/customer/getroles" ,"/customer/changerole/user", "/customer/changerole/admin")
+                .authenticated()
 
                 .and()
                 .cors().configurationSource(request -> {

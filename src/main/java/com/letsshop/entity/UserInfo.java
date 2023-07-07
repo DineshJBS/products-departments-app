@@ -31,6 +31,12 @@ public class UserInfo {
 
         this.password = password;
     }
+    public UserInfo(String name, String password, String roles) {
+
+        this.name = name;
+        this.roles = roles;
+        this.password = password;
+    }
 
     public String getRoles() {
         return roles;
