@@ -1,15 +1,21 @@
 package com.letsshop.controller;
 
+
 import com.letsshop.dto.*;
 import com.letsshop.entity.UserInfo;
 import com.letsshop.repository.UserInfoRepository;
+import com.letsshop.service.EmailSenderService;
 import com.letsshop.service.SignUpService;
 import com.letsshop.service.UserProductService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +24,7 @@ import java.util.Base64;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
+
 
 @RestController
 @RequestMapping("/customer")
@@ -30,11 +37,19 @@ public class SignUpController {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
+
     @Autowired
     private UserProductService userProductService;
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private EmailSenderService service;
+
+    String otpForVerifcation;
+//    private static final Integer EXPIRE_MINS = 5;
+//    private LoadingCache<String, Integer> otpCache;
 
     @CrossOrigin(origins = {"http://localhost:4200"})
     @PostMapping("/signup-submit")
@@ -75,12 +90,28 @@ public class SignUpController {
         return credentials[0];
     }
 
+
+    @PostMapping("/sendotp")
+    public void sendOtpEmailForEmail(@RequestBody EmailRequestForOtp emailRequestForOtp){
+        System.out.println("In send otp method");
+        String toEmail = emailRequestForOtp.getEmail();
+        int otpGenerated = generateOtp();
+
+        service.sendOtpMail(emailRequestForOtp.getEmail(),"The OTP for you is  " +  String.valueOf(otpGenerated), "OTP For Verification");
+
+         this.otpForVerifcation = String.valueOf(otpGenerated);
+
+//        session.setAttribute("otpForVerifcation", otpForVerifcation);
+    }
+
     @PostMapping("/forgotpassword")
     public ForgotPasswordResponse forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){
         System.out.println(forgotPasswordRequest.toString());
 
         String otpFromRequest = forgotPasswordRequest.getOtp();
-        String otpForVerifcation = String.valueOf(generateOtp());
+
+
+         String otpForVerifcation1 =  this.otpForVerifcation;
 
         String emailForVerification =
                 userInfoRepository.
@@ -91,7 +122,7 @@ public class SignUpController {
 
         String emailFromRequest = forgotPasswordRequest.getEmail();
 
-        if(otpForVerifcation.equals(otpFromRequest)
+        if(otpForVerifcation1.equals(otpFromRequest)
                 && emailFromRequest != null
                 && emailFromRequest.equals(emailForVerification)){
             return new ForgotPasswordResponse("true");
@@ -101,7 +132,7 @@ public class SignUpController {
     }
 
     @PostMapping("/resetpassword")
-    public String resetPassword(@RequestBody NewPasswordRequest newPasswordRequest){
+    public String resetPassword(@RequestBody NewPasswordRequest newPasswordRequest ){
 
 
         UserInfo userInfo = userInfoRepository.findByEmail(newPasswordRequest.getEmail()).get();
@@ -141,15 +172,12 @@ public class SignUpController {
     }
 
 
-
-
-
     private int generateOtp() {
-//        Random random = new Random();
-//        int min = 0; int max = 1000;
-//        return (random.nextInt(max - min + 1) + min);
-        return 123;
-    }
+        Random random = new Random();
+        int min = 0; int max = 1000;
+        int otp = (random.nextInt(max - min + 1) + min);
 
+        return otp;
+    }
 
 }
