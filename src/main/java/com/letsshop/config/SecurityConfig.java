@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .requestMatchers("/products","/department/**", "/products/**",
                         "/customer/login","/productsAndDepartments","/user-products",
                         "/add-to-cart", "/user-orders", "/customer/role",
-                        "/customer/getroles" ,"/customer/changerole/user", "/customer/changerole/admin")
+                        "/customer/getroles" ,"/customer/changerole/user", "/customer/changerole/admin",
+                        "/invoice", "/orders/export/excel")
                 .authenticated()
 
                 .and()

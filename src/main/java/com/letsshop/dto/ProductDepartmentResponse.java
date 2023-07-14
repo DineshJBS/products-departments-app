@@ -27,4 +27,12 @@ public class ProductDepartmentResponse {
     public void setDeptName(String deptName) {
         this.deptName = deptName;
     }
+
+    @Override
+    public String toString() {
+        return "ProductDepartmentResponse{" +
+                "productName='" + productName + '\'' +
+                ", deptName='" + deptName + '\'' +
+                '}';
+    }
 }

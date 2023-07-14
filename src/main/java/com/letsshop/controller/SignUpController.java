@@ -9,6 +9,8 @@ import com.letsshop.service.SignUpService;
 import com.letsshop.service.UserProductService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -26,10 +28,14 @@ import java.util.List;
 import java.util.Random;
 
 
+
 @RestController
 @RequestMapping("/customer")
 @CrossOrigin(origins = {"http://localhost:4200"})
 public class SignUpController {
+
+    private static final Logger logger = LogManager.getLogger(SignUpController.class);
+
 
     private  UserInfo userInfo;
     @Autowired
@@ -77,7 +83,7 @@ public class SignUpController {
                .findByName(getUsernameFromHeader(header))
                .get()
                .getRoles();
-
+        logger.info("Login successfull for user " + getUsernameFromHeader(header));
        return new RoleResponse(role);
 
    }
@@ -92,13 +98,19 @@ public class SignUpController {
 
 
     @PostMapping("/sendotp")
-    public void sendOtpEmailForEmail(@RequestBody EmailRequestForOtp emailRequestForOtp){
+    public void sendOtpEmail(@RequestBody EmailRequestForOtp emailRequestForOtp){
         System.out.println("In send otp method");
         String toEmail = emailRequestForOtp.getEmail();
         int otpGenerated = generateOtp();
 
+        logger.info("Inside sendOtpEmail method ");
+        logger.info("OTP generated successfully  " + otpGenerated);
+
         service.sendOtpMail(emailRequestForOtp.getEmail(),"The OTP for you is  " +  String.valueOf(otpGenerated), "OTP For Verification");
 
+        logger.info("OTP email sent successfully ");
+
+        logger.info("Storing the sent OTP in instance variable for verification");
          this.otpForVerifcation = String.valueOf(otpGenerated);
 
 //        session.setAttribute("otpForVerifcation", otpForVerifcation);
@@ -108,10 +120,13 @@ public class SignUpController {
     public ForgotPasswordResponse forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){
         System.out.println(forgotPasswordRequest.toString());
 
+        logger.info("Inside forgotPassword() method ");
+        logger.info("Getting OTP entered in client side from RequestBody " );
         String otpFromRequest = forgotPasswordRequest.getOtp();
+        logger.info("OTP fetched from client successfully " +  forgotPasswordRequest.getOtp());
 
+         String otpForVerification1 =  this.otpForVerifcation;
 
-         String otpForVerifcation1 =  this.otpForVerifcation;
 
         String emailForVerification =
                 userInfoRepository.
@@ -121,39 +136,50 @@ public class SignUpController {
                         .getEmail();
 
         String emailFromRequest = forgotPasswordRequest.getEmail();
-
-        if(otpForVerifcation1.equals(otpFromRequest)
+        logger.info("Verifying OTP entered in client side and OTP generated from server side ");
+        if(otpForVerification1.equals(otpFromRequest)
                 && emailFromRequest != null
                 && emailFromRequest.equals(emailForVerification)){
+            logger.info("OTP verification success so sending 'true' response to client");
             return new ForgotPasswordResponse("true");
         }
-
+        logger.info("OTP verification success so sending 'false' response to client");
         return new ForgotPasswordResponse("false");
     }
 
     @PostMapping("/resetpassword")
     public String resetPassword(@RequestBody NewPasswordRequest newPasswordRequest ){
 
+        logger.info("Inside resetPassword method ");
 
+        logger.info("Getting userInfo object to save password using email " + newPasswordRequest.getEmail());
         UserInfo userInfo = userInfoRepository.findByEmail(newPasswordRequest.getEmail()).get();
 
+        if(userInfo == null){
+            logger.info("userInfo object is null, email not found or user doesn't exist");
+        }
+
+        logger.info("Resetting the new password on userInfo object");
         userInfo.setPassword(encoder.encode(newPasswordRequest.getNewPassword()));
 
         userInfoRepository.save(userInfo);
+        logger.info("Password Rest successful");
         return "Password Updated";
     }
 
 
     @GetMapping("/getroles")
     public List<UserDTO> getRoles(){
+        logger.info("inside getRoles method to return the list of users and their roles");
         return signUpService.getUsers();
 
     }
 
     @PostMapping("/changerole/user")
     public String changeRoleToUser(@RequestBody UserDTO userDTO){
-        System.out.println("in user method");
-        System.out.println(userDTO.toString());
+        logger.info("In changeRoleToUser method ");
+        logger.info(userDTO);
+        logger.info("Getting userInfo object to change role");
         UserInfo userInfo = userInfoRepository.findByName(userDTO.getName()).get();
         userInfo.setRoles(userDTO.getRole());
         userInfoRepository.save(userInfo);
@@ -161,11 +187,13 @@ public class SignUpController {
     }
     @PostMapping("/changerole/admin")
     public String changeRoleToAdmin(@RequestBody UserDTO userDTO){
-        System.out.println(userDTO.toString());
+        logger.info("In changeRoleToAdmin method ");
+        logger.info(userDTO.toString());
+        logger.info("Getting userInfo object to change role");
         UserInfo userInfo = userInfoRepository.findByName(userDTO.getName()).get();
-        System.out.println(userInfo.toString());
+
         userInfo.setRoles(userDTO.getRole());
-        System.out.println("After setting the user role " + userInfo.getRoles());
+        logger.info("After setting the user role " + userInfo.getRoles());
         userInfoRepository.save(userInfo);
         return "Role updated successfully";
 
